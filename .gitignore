@@ -1,5 +1,9 @@
 # not from template #########################################
 
+# examples
+src/examples/data/
+src/examples/dataset/
+
 # malefemale
 src/malefemale/data/
 src/malefemale/dataset/
