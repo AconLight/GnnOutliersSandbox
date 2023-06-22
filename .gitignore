@@ -1,3 +1,10 @@
+# not from template #########################################
+
+# malefemale
+src/malefemale/data/
+src/malefemale/dataset/
+
+# from template #############################################
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
