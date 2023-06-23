@@ -6,6 +6,7 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 import os
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+import random
 
 
 # Define model
@@ -81,25 +82,27 @@ if __name__ == "__main__":
 
     # Get cpu, gpu or mps device for training.
     device = ("cuda" if torch.cuda.is_available() else "cpu")
-    # device = 'cpu'
+    device = 'cpu'
     print('device: ', device)
 
     model = NeuralNetwork().to(device)
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-    epochs = 1
+    epochs = 0
+    test(test_dataloader, model, loss_fn)
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
         train(train_dataloader, model, loss_fn, optimizer)
         test(test_dataloader, model, loss_fn)
     print("Done!")
 
-    example_img, example_label = test_dataloader.dataset[0]
-    print('example label:', example_label)
-    plt.imshow(example_img.squeeze())
-    plt.title('example')
-    plt.show()
-    pred = model(example_img.to(device))
-    print('pred label   :', pred.argmax().item())
+    for i in range(1):
+        example_img, example_label = test_dataloader.dataset[random.randint(0,300)]
+        print('example label:', example_label)
+        plt.imshow(example_img.squeeze())
+        plt.title('example')
+        plt.show()
+        pred = model(example_img.to(device))
+        print('pred label   :', pred.argmax().item())
 
