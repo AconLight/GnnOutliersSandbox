@@ -36,6 +36,9 @@ def train(dataloader, model, loss_fn, optimizer):
 
         # Compute prediction error
         pred = model(X)
+        # print("siema")
+        # print(pred)
+        # print(y)
         loss = loss_fn(pred, y)
 
         # Backpropagation
@@ -89,7 +92,7 @@ if __name__ == "__main__":
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-    epochs = 0
+    epochs = 1
     test(test_dataloader, model, loss_fn)
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")

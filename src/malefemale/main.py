@@ -1,3 +1,5 @@
+import time
+
 import torch
 from matplotlib import pyplot as plt
 from torch import nn
@@ -38,7 +40,7 @@ class NeuralNetwork(nn.Module):
 
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(93312, 1000),
+            nn.Linear(3042, 1000),
             nn.ReLU(),
             nn.Linear(1000, 250),
             nn.ReLU(),
@@ -74,7 +76,7 @@ def train(dataloader, model, loss_fn, optimizer):
     model.train()
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to(device), y.to(device)
-
+        # print(X.shape)
         # Compute prediction error
         pred = model(X)
         loss = loss_fn(pred, y)
@@ -98,8 +100,12 @@ def test(dataloader, model, loss_fn):
 
             X, y = X.to(device), y.to(device)
             pred = model(X)
+            # print("siema")
+            # print(pred)
+            # print(y)
             test_loss += loss_fn(pred, y).item()
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
+            # print(correct)
     test_loss /= num_batches
     correct /= size
     print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
@@ -107,7 +113,7 @@ def test(dataloader, model, loss_fn):
 
 def get_train_test():
     dataset = PerDirectoryImgClassificationDataset()
-    garbage, shrinked = torch.utils.data.random_split(dataset, [0.9, 0.1])
+    garbage, shrinked = torch.utils.data.random_split(dataset, [0.0, 1.0])
     train, test = torch.utils.data.random_split(shrinked, [0.7, 0.3])
     return train, test
 
@@ -115,7 +121,7 @@ if __name__ == "__main__":
 
     training_data, test_data = get_train_test()
 
-    batch_size = 4
+    batch_size = 64
 
     train_dataloader = DataLoader(training_data, batch_size=batch_size)
     test_dataloader = DataLoader(test_data, batch_size=batch_size)
@@ -127,20 +133,25 @@ if __name__ == "__main__":
 
     model = NeuralNetwork().to(device)
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.0005)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
-    epochs = 3
+    start = time.time()
+    epochs = 500
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
         train(train_dataloader, model, loss_fn, optimizer)
         test(test_dataloader, model, loss_fn)
+        end = time.time()
+        print("time elapsed: ", str(end - start))
     print("Done!")
 
     example_img, example_label = test_dataloader.dataset[0]
     print('example label:', example_label)
-    plt.imshow(np.reshape(example_img, (300, 300, 3)))
+    # print(torch.unsqueeze(torch.from_numpy(example_img), 0).shape)
+    pred = model(torch.unsqueeze(torch.from_numpy(example_img), 0).to(device))
+    print('pred label   :', pred.argmax().item())
+    plt.imshow(np.reshape(example_img, (64, 64, 3)))
     plt.title('example')
     plt.show()
-    # pred = model(torch.from_numpy(example_img).to(device))
-    # print('pred label   :', pred.argmax().item())
+
 
