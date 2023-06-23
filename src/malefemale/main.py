@@ -153,5 +153,6 @@ if __name__ == "__main__":
     plt.imshow(np.reshape(example_img, (64, 64, 3)))
     plt.title('example')
     plt.show()
+    torch.save(model.state_dict(), "savedmodels/last")
 
 
