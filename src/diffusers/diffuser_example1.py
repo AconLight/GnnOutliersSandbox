@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-prompt = "Galactus playing soccer with planet earth instead of a ball."
+prompt = "Goat as a ballerina dancer."
 
 login(os.environ['access_token'])
 pipeline = DiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", torch_dtype=torch.float16)
